@@ -1,0 +1,65 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.info.cadastro.controller;
+
+
+import com.info.cadastro.model.Cadastro;
+import com.info.cadastro.repository.CadastroRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+/**
+ *
+ * @author info20242
+ */
+@Controller
+@RequestMapping({"cadastro"})
+public class CadastroController {
+    @Autowired
+    CadastroRepository cr;
+
+    List<Cadastro> listaCadastro;
+    
+    @GetMapping("/")
+    public String listarCadastro(Model model){
+        listaCadastro=cr.findAll();
+        model.addAttribute("listacadastro",listaCadastro);
+        return "paginas/lista-cadastro";
+    }
+    @GetMapping("/novo")
+    public String novoCadastro(Model model) {
+        Cadastro cadastro = new Cadastro();
+        model.addAttribute("cadastro", cadastro);
+        return "paginas/form-cadastro";
+    }   
+    
+    @GetMapping("/pesquisa")
+    public String pesquisa(Model model) {
+       Cadastro cadastro = new Cadastro();
+        model.addAttribute("cadastro", cadastro);
+        return "paginas/pesquisa";
+    }   
+    
+    
+    
+    @GetMapping("/exclui")
+    public String excluiCadastro(@RequestParam("id") Integer id){
+        
+        cr.deleteById(id);
+        return "redirect:/funcionario/";
+    }
+    @PostMapping("/salvar")
+    public String salvaCadastro(@ModelAttribute("cadastro")Cadastro cadastro){
+        cr.save(cadastro);
+        return "redirect:/cadastro/";
+    }
+}
